@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEVHOST // License Portal</title>
+    <style>
+        :root {
+            --bg-dark: #090b10;
+            --card-bg: rgba(18, 22, 33, 0.92);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent: #00f2fe;
+            --accent-2: #4facfe;
+            --discord: #5865F2;
+            --discord-hover: #4752C4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(79, 172, 254, 0.12), transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(0, 242, 254, 0.10), transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 35px 35px, 35px 35px;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 25px rgba(79, 172, 254, 0.08);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(79, 172, 254, 0.1);
+            border: 1px solid rgba(79, 172, 254, 0.25);
+            color: var(--accent);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 999px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .brand-badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+
+        .finder-box {
+            background: rgba(9, 11, 16, 0.85);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 18px;
+        }
+
+        .finder-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .finder-label {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .finder-status {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .finder-status.ready {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .finder-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+
+        .finder-value {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .finder-value.empty {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .copy-hwid-btn {
+            background: rgba(0, 242, 254, 0.15);
+            border: 1px solid rgba(0, 242, 254, 0.35);
+            color: var(--accent);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .copy-hwid-btn:hover:not(:disabled) {
+            background: rgba(0, 242, 254, 0.28);
+            color: #fff;
+        }
+
+        .copy-hwid-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .finder-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-finder {
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .btn-cmd {
+            background: rgba(79, 172, 254, 0.16);
+            border: 1px solid rgba(79, 172, 254, 0.4);
+            color: #7dd3fc;
+        }
+
+        .btn-cmd:hover {
+            background: rgba(79, 172, 254, 0.3);
+            color: #fff;
+        }
+
+        .btn-bat {
+            background: rgba(16, 185, 129, 0.14);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+        }
+
+        .btn-bat:hover {
+            background: rgba(16, 185, 129, 0.26);
+            color: #fff;
+        }
+
+        .cmd-guide {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: rgba(0, 242, 254, 0.06);
+            border: 1px dashed rgba(0, 242, 254, 0.3);
+            border-radius: 8px;
+            font-size: 11.5px;
+            color: #cbd5e1;
+            line-height: 1.55;
+        }
+
+        .cmd-guide code {
+            background: rgba(0, 0, 0, 0.55);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(9, 11, 16, 0.8);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 14px 72px 14px 16px;
+            border-radius: 10px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 13.5px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.15);
+        }
+
+        .paste-btn {
+            position: absolute;
+            right: 8px;
+            background: rgba(0, 242, 254, 0.14);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            color: var(--accent);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .paste-btn:hover {
+            background: rgba(0, 242, 254, 0.28);
+            color: #fff;
+        }
+
+        .status-box {
+            display: none;
+            padding: 11px 14px;
+            border-radius: 9px;
+            font-size: 12.5px;
+            line-height: 1.45;
+            margin-bottom: 14px;
+        }
+
+        .status-box.info {
+            display: block;
+            background: rgba(79, 172, 254, 0.12);
+            border: 1px solid rgba(79, 172, 254, 0.3);
+            color: #bae6fd;
+        }
+
+        .status-box.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+        }
+
+        .status-box.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+
+        .btn-discord {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 12px;
+            background-color: var(--discord);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .btn-discord:hover {
+            background-color: var(--discord-hover);
+            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .btn-discord svg {
+            width: 19px;
+            height: 19px;
+            fill: currentColor;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent));
+            color: #090b10;
+            font-size: 14.5px;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .btn-login:hover {
+            opacity: 0.95;
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Dashboard Styles */
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-info h2 {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .user-info p {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .status-pill {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .info-card {
+            background: rgba(9, 11, 16, 0.75);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .info-card span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .info-card strong {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .showcase-box {
+            background: rgba(9, 11, 16, 0.85);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .showcase-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .showcase-video {
+            width: 100%;
+            border-radius: 8px;
+            background: #000;
+            display: block;
+            max-height: 210px;
+            object-fit: cover;
+        }
+
+        .resource-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .resource-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .resource-link:hover {
+            background: rgba(79, 172, 254, 0.12);
+            border-color: rgba(79, 172, 254, 0.35);
+            color: #fff;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.22);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="container" id="loginPage">
+    <div class="brand-header">
+        <div class="brand-badge">
+            <span class="dot"></span>
+            SYSTEM ONLINE
+        </div>
+        <h1>License Authentication</h1>
+        <p class="subtitle">I-click ang button sa ibaba upang kunin ang iyong totoong System HWID.</p>
+    </div>
+
+    <div class="finder-box">
+        <div class="finder-top">
+            <span class="finder-label">SYSTEM HWID FINDER</span>
+            <span class="finder-status ready" id="finderStatusBadge">READY</span>
+        </div>
+        <div class="finder-display">
+            <span class="finder-value empty" id="detectedHwidDisplay">Wala pang HWID — pindutin ang button</span>
+            <button type="button" class="copy-hwid-btn" id="copyDetectedBtn" disabled>COPY HWID</button>
+        </div>
+        <div class="finder-actions">
+            <button type="button" class="btn-finder btn-cmd" onclick="copyOneLineCmd()">Copy CMD (Win+R)</button>
+            <button type="button" class="btn-finder btn-bat" onclick="downloadExactBatFile()">Download .BAT</button>
+        </div>
+        <div class="cmd-guide" id="cmdGuideBox">
+            <strong>Nakopya na ang CMD command!</strong><br>
+            1. Pindutin sa keyboard ang <code>Win + R</code><br>
+            2. Pindutin ang <code>Ctrl + V</code> at <code>Enter</code><br>
+            3. Bumalik dito at pindutin ang <strong>PASTE</strong>.
+        </div>
+    </div>
+
+    <form id="authForm" onsubmit="handleLoginSubmit(event)">
+        <div class="input-group">
+            <label for="hwidInput">Hardware ID (System Signature)</label>
+            <div class="input-wrapper">
+                <input type="text" id="hwidInput" placeholder="Ilagay o i-paste ang HWID..." oninput="checkHWIDLive()" autocomplete="off" required>
+                <button type="button" class="paste-btn" onclick="pasteFromClipboard()">PASTE</button>
+            </div>
+        </div>
+
+        <div id="statusBox" class="status-box"></div>
+
+        <!-- Discord Button Before Verify & Login -->
+        <a href="https://discord.gg/Hs3vYavRW" target="_blank" rel="noopener noreferrer" class="btn-discord">
+            <svg viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg">
+                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+            </svg>
+            Join Discord Server
+        </a>
+
+        <button type="submit" class="btn-login">Verify & Login</button>
+    </form>
+</div>
+
+<!-- DASHBOARD / HOME PAGE -->
+<div class="container" id="homePage" style="display: none;">
+    <div class="dashboard-header">
+        <div class="user-info">
+            <h2 id="displayClientName">User</h2>
+            <p>HWID: <span id="displayHwid">---</span></p>
+        </div>
+        <span class="status-pill" id="statusBadge">ACTIVE</span>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <span>License Status</span>
+            <strong style="color: #6ee7b7;">VERIFIED</strong>
+        </div>
+        <div class="info-card">
+            <span>Expiration</span>
+            <strong id="displayExpiry">N/A</strong>
+        </div>
+    </div>
+
+    <div class="showcase-box">
+        <div class="showcase-top">
+            <span>Live Showcase Preview</span>
+            <span style="color: var(--accent);">● AUTO-PLAY</span>
+        </div>
+        <video id="showcaseVideo" class="showcase-video" loop muted playsinline poster="">
+            <source src="" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="resource-links">
+        <a href="https://imgur.com/a/Wegueun" target="_blank" rel="noopener noreferrer" class="resource-link">
+            <span>Watch Full Showcase Video</span>
+            <span>→</span>
+        </a>
+        <a href="https://dl.dropbox.com/scl/fi/sw3eyvj7upr6kz2i5f32d/ID-Gate.exe?rlkey=dod0owyj3yaj8ofztdglphc57&st=o08vrvbs&dl=1" target="_blank" rel="noopener noreferrer" class="resource-link">
+            <span>Download Latest Loader</span>
+            <span>→</span>
+        </a>
+        <a href="https://discord.gg/Hs3vYavRW" target="_blank" rel="noopener noreferrer" class="resource-link">
+            <span>Contact Admin Support (Discord)</span>
+            <span>→</span>
+        </a>
+    </div>
+
+    <button type="button" class="btn-logout" onclick="logout()">Disconnect / Logout</button>
+</div>
+
+<script>
+    const GITHUB_URL = "https://raw.githubusercontent.com/kupx505/webites/refs/heads/main/Ctool.txt";
+
+    let cachedDatabase = [];
+    let isDatabaseLoaded = false;
+    let waitingForCmdRun = false;
+    const video = document.getElementById('showcaseVideo');
+
+    function showStatus(type, message) {
+        const box = document.getElementById('statusBox');
+        box.className = "status-box " + type;
+        box.textContent = message;
+    }
+
+    function hideStatus() {
+        const box = document.getElementById('statusBox');
+        box.className = "status-box";
+        box.textContent = "";
+    }
+
+    function extractNumericHWID(raw) {
+        if (!raw) return "";
+        return raw.replace(/\D/g, "");
+    }
+
+    function copyTextSafe(text, callback) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                if (callback) callback();
+            }).catch(() => {
+                fallbackCopy(text, callback);
+            });
+        } else {
+            fallbackCopy(text, callback);
+        }
+    }
+
+    function fallbackCopy(text, callback) {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        if (callback) callback();
+    }
+
+    async function pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            const clean = extractNumericHWID(text) || text.trim();
+            document.getElementById('hwidInput').value = clean;
+            if (clean) {
+                const display = document.getElementById('detectedHwidDisplay');
+                display.textContent = clean;
+                display.classList.remove('empty');
+                const copyBtn = document.getElementById('copyDetectedBtn');
+                copyBtn.disabled = false;
+                copyBtn.onclick = () => copyTextSafe(clean, () => showStatus("info", "Nakopya ang HWID sa clipboard!"));
+            }
+            checkHWIDLive();
+        } catch (err) {
+            showStatus("error", "Hindi ma-access ang clipboard. I-press ang Ctrl+V sa input box.");
+        }
+    }
+
+    function copyOneLineCmd() {
+        const cmdOneLiner = `cmd /c "for %D in (C D E F G H I J K L) do @for /f "tokens=5" %S in ('vol %D: 2^>nul ^| findstr /i Serial') do @powershell -NoP -C "$h=[Convert]::ToUInt32('%S'.Replace('-',''),16); if($h -ne 0){Set-Clipboard $h; Write-Host 'Calculated HWID:' $h; pause; exit}" & exit"`;
+
+        copyTextSafe(cmdOneLiner, () => {
+            document.getElementById('cmdGuideBox').style.display = 'block';
+            waitingForCmdRun = true;
+            showStatus("info", "Nakopya ang CMD Finder! I-press ang Win + R, i-paste (Ctrl+V), at pindutin ang Enter.");
+        });
+    }
+
+    function downloadExactBatFile() {
+        const batScript = [
+            "@echo off",
+            "setlocal enabledelayedexpansion",
+            "title SEVHOST // System HWID Finder",
+            "color 0B",
+            "set \"calculatedHWID=\"",
+            "",
+            "for %%D in (C D E F G H I J K L) do (",
+            "    if not defined calculatedHWID (",
+            "        for /f \"tokens=5\" %%S in ('vol %%D: 2^>nul ^| findstr /i \"Serial\"') do (",
+            "            set \"hexSerial=%%S\"",
+            "            set \"hexSerial=!hexSerial:-=!\"",
+            "            set /a \"decSerial=0x!hexSerial!\" 2>nul",
+            "            if !decSerial! neq 0 (",
+            "                if !decSerial! lss 0 (",
+            "                    set /a \"high=(!decSerial! >> 16) & 0xFFFF\"",
+            "                    set /a \"low=!decSerial! & 0xFFFF\"",
+            "                    set /a \"top=!high! / 10\"",
+            "                    set /a \"rem=!high! %% 10\"",
+            "                    set /a \"bot=(!rem! * 65536) + !low!\"",
+            "                    set \"botStr=00000!bot!\"",
+            "                    set \"botStr=!botStr:~-5!\"",
+            "                    set \"calculatedHWID=!top!!botStr!\"",
+            "                ) else (",
+            "                    set \"calculatedHWID=!decSerial!\"",
+            "                )",
+            "            )",
+            "        )",
+            "    )",
+            ")",
+            "",
+            "echo !calculatedHWID!| clip",
+            "echo ==========================================",
+            "echo Calculated HWID: !calculatedHWID!",
+            "echo (Copied to Clipboard!)",
+            "echo ==========================================",
+            "pause"
+        ].join("\r\n");
+
+        const dataUri = "data:application/octet-stream;charset=utf-8," + encodeURIComponent(batScript);
+        const link = document.createElement("a");
+        link.setAttribute("href", dataUri);
+        link.setAttribute("download", "SEVHOST_HWID_Finder.bat");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        waitingForCmdRun = true;
+        showStatus("info", "Na-download ang SEVHOST_HWID_Finder.bat! Buksan ito sa Downloads folder upang makita at ma-copy ang iyong HWID.");
+    }
+
+    function openHomePage(hwid, clientName, expiryDateStr) {
+        localStorage.setItem('saved_hwid', hwid);
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('homePage').style.display = 'block';
+        document.getElementById('displayClientName').textContent = clientName;
+        document.getElementById('displayHwid').textContent = hwid;
+        document.getElementById('displayExpiry').textContent = expiryDateStr;
+
+        const badge = document.getElementById('statusBadge');
+        if (expiryDateStr.toLowerCase().includes("no expired") ||
+            expiryDateStr.toLowerCase().includes("lifetime")) {
+            badge.textContent = "VIP // LIFETIME";
+        } else {
+            badge.textContent = "ACTIVE LICENSE";
+        }
+
+        if (video.querySelector('source').getAttribute('src')) {
+            video.muted = true;
+            video.currentTime = 0;
+            video.play().catch(() => {});
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('saved_hwid');
+        video.pause();
+        video.currentTime = 0;
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('loginPage').style.display = 'block';
+        checkHWIDLive();
+    }
+
+    function getMonthNumber(dateStr) {
+        const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+        const lower = dateStr.toLowerCase();
+        for (let i = 0; i < months.length; i++) {
+            if (lower.indexOf(months[i]) !== -1) return i + 1;
+        }
+        return 0;
+    }
+
+    function getDayNumber(dateStr) {
+        const match = dateStr.match(/\b(\d{1,2})\b/);
+        if (match && match[1]) {
+            return parseInt(match[1], 10);
+        }
+        return 0;
+    }
+
+    function isExpired(expiryDateStr) {
+        const lower = expiryDateStr.toLowerCase();
+        if (lower.includes("no expired") || lower.includes("lifetime")) {
+            return false;
+        }
+        const expMonth = getMonthNumber(expiryDateStr);
+        const expDay = getDayNumber(expiryDateStr);
+        if (expMonth === 0 || expDay === 0) return false;
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentDay = now.getDate();
+        if (expMonth < currentMonth) return true;
+        if (expMonth === currentMonth && expDay < currentDay) return true;
+        return false;
+    }
+
+    async function fetchHWIDList() {
+        try {
+            const res = await fetch(GITHUB_URL + "?t=" + Date.now());
+            if (res.ok) return await res.text();
+        } catch (e) {}
+        try {
+            const proxy1 = "https://api.allorigins.win/raw?url=" + encodeURIComponent(GITHUB_URL);
+            const res1 = await fetch(proxy1);
+            if (res1.ok) return await res1.text();
+        } catch (e) {}
+        const proxy2 = "https://corsproxy.io/?url=" + encodeURIComponent(GITHUB_URL);
+        const res2 = await fetch(proxy2);
+        if (!res2.ok) throw new Error("Hindi ma-access ang authentication server.");
+        return await res2.text();
+    }
+
+    function parseHWIDDatabase(rawText) {
+        const entries = [];
+        const regex = /(\d+)\s*\{([\s\S]*?)\}/g;
+        let match;
+
+        while ((match = regex.exec(rawText)) !== null) {
+            const hwid = match[1].trim();
+            const block = match[2];
+
+            const nameMatch = block.match(/'name'\s*:?\s*([^,\n}]+)/i);
+            const dateMatch = block.match(/'date'\s*:?\s*([^,\n}]+)/i);
+
+            entries.push({
+                hwid: hwid,
+                name: (nameMatch && nameMatch[1]) ? nameMatch[1].trim() : "Registered Client",
+                date: (dateMatch && dateMatch[1]) ? dateMatch[1].trim() : "N/A"
+            });
+        }
+        return entries;
+    }
+
+    async function loadDatabase() {
+        try {
+            const rawData = await fetchHWIDList();
+            cachedDatabase = parseHWIDDatabase(rawData);
+            isDatabaseLoaded = true;
+            const saved = localStorage.getItem('saved_hwid');
+            if (saved) {
+                document.getElementById('hwidInput').value = saved;
+                checkHWIDLive();
+            }
+        } catch (err) {
+            console.error(err);
+            showStatus("error", "Hindi makakonekta sa database server.");
+        }
+    }
+
+    function checkHWIDLive() {
+        const inputEl = document.getElementById('hwidInput');
+        const cleanVal = extractNumericHWID(inputEl.value);
+
+        if (!inputEl.value.trim()) {
+            hideStatus();
+            return null;
+        }
+
+        if (!isDatabaseLoaded) {
+            showStatus("info", "Checking server database...");
+            return null;
+        }
+
+        const targetHwid = cleanVal || inputEl.value.trim();
+        const matches = cachedDatabase.filter(item => item.hwid === targetHwid);
+
+        if (matches.length === 0) {
+            showStatus("error", "Hindi rehistrado ang HWID na ito sa database.");
+            return null;
+        }
+
+        const activeMatch = matches.find(m => !isExpired(m.date)) || matches[matches.length - 1];
+
+        if (isExpired(activeMatch.date)) {
+            showStatus("error", `Expired na ang iyong license (${activeMatch.date}). Kontakin ang Admin sa Discord.`);
+            return null;
+        }
+
+        showStatus("success", `Verified: ${activeMatch.name} (${activeMatch.date})`);
+        return activeMatch;
+    }
+
+    async function handleLoginSubmit(e) {
+        e.preventDefault();
+        if (!isDatabaseLoaded) {
+            showStatus("info", "Naglo-load pa ng database, sandali lang...");
+            await loadDatabase();
+        }
+        const validUser = checkHWIDLive();
+        if (validUser) {
+            openHomePage(validUser.hwid, validUser.name, validUser.date);
+        }
+    }
+
+    window.addEventListener('focus', async () => {
+        if (waitingForCmdRun) {
+            waitingForCmdRun = false;
+            try {
+                const clipText = await navigator.clipboard.readText();
+                const clean = extractNumericHWID(clipText);
+                if (clean) {
+                    document.getElementById('hwidInput').value = clean;
+                    const display = document.getElementById('detectedHwidDisplay');
+                    display.textContent = clean;
+                    display.classList.remove('empty');
+                    const copyBtn = document.getElementById('copyDetectedBtn');
+                    copyBtn.disabled = false;
+                    copyBtn.onclick = () => copyTextSafe(clean, () => showStatus("info", "Nakopya ang HWID sa clipboard!"));
+                    checkHWIDLive();
+                }
+            } catch (e) {}
+        }
+    });
+
+    loadDatabase();
+</script>
+</body>
+</html>
