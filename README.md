@@ -1,79 +1,88 @@
 # SEVHOST License Portal
 
-A responsive, single-page browser portal for checking a hardware ID (HWID) against an externally hosted license list. The current project is a self-contained HTML page using CSS and vanilla JavaScript.
+A responsive, single-page HWID license portal with a dark interface and Filipino-language guidance. The site is built as a self-contained HTML file with embedded CSS and vanilla JavaScript.
 
 ## Live website
 
 https://kirbyjake986-blip.github.io/nevvv.github.io/
 
-GitHub Pages must be configured to deploy the `main` branch from the repository root for this address to serve the latest `index.html`.
+The URL is served by GitHub Pages when the repository is configured to deploy the `main` branch from the root folder.
 
-## Features
+## Current interface and features
 
-- HWID sign-in and license-list lookup
-- HWID helper tools: CMD command, downloadable `SEVHOST_HWID_Finder.bat`, and clipboard support
-- Registered-client, HWID, and expiry/status display after a successful check
-- Expired and unregistered license feedback
-- Browser-side saved HWID convenience and logout
-- Responsive dark-themed interface
-- Discord community/support and external showcase/download resources
+- **Filipino-language login guidance:** explains how to retrieve and submit the computer's system HWID.
+- **System HWID Finder panel:** displays the detected/copied HWID and provides a copy action.
+- **CMD helper:** copies a Windows Run command intended to calculate a numeric volume-serial-based HWID and copy it to the clipboard.
+- **Batch-file helper:** generates and downloads `SEVHOST_HWID_Finder.bat` for local HWID retrieval.
+- **Paste and clipboard support:** lets users paste an HWID into the login field and copy the displayed value.
+- **Live license feedback:** checks the entered HWID against the configured database and displays registered, unregistered, expired, or loading states.
+- **Client dashboard:** displays the client name, HWID, license expiry text, and an active or lifetime status badge.
+- **Session convenience:** saves the last HWID in browser `localStorage`; logout clears the saved value.
+- **Showcase and resource links:** includes a Discord invite, Imgur showcase link, and external loader download.
+- **Responsive styling:** dark theme with cyan/blue accents, cards, and mobile-friendly layout.
 
 ## Project structure
 
 ```text
 .
-└── index.html    # Markup, styles, and JavaScript for the portal
+└── index.html    # Page markup, styles, and all browser-side JavaScript
 ```
 
-No build step, package manager, or separate asset directory is required for the current page.
+The current project has no build step, package manager, or separate CSS/JavaScript files.
 
-## How license verification works
+## License verification flow
 
-1. On page load, the browser requests the text license list from the URL assigned to `GITHUB_URL` in `index.html`.
-2. If the direct request fails, the page tries the configured CORS proxy services.
-3. `parseHWIDDatabase()` extracts numeric HWIDs and the associated `name` and `date` values.
-4. When a visitor submits an HWID, the page looks for a matching record and checks whether its expiry date has passed.
-5. A valid record opens the client dashboard; missing or expired records show an error.
+1. On page load, the browser requests the license list from the `GITHUB_URL` constant in `index.html`.
+2. If the direct request fails, it attempts the configured AllOrigins and corsproxy.io proxy URLs.
+3. `parseHWIDDatabase()` parses numeric HWID entries and reads the associated `name` and `date` values.
+4. The submitted HWID is compared with the parsed records.
+5. Expired or unknown HWIDs are rejected; a matching active record opens the dashboard.
 
-The license database must use the format expected by `parseHWIDDatabase()`. Check that function before changing the source data structure.
+The license database is currently configured as:
 
-## External links in the current page
+```text
+https://raw.githubusercontent.com/kupx505/webites/refs/heads/main/Ctool.txt
+```
 
-- Primary Discord invite: https://discord.gg/V5pduTcsJV
-- Additional Discord/resource invite: https://discord.gg/Hs3vYavRW
-- Showcase: https://imgur.com/a/Wegueun
-- External download: [ID-Gate.exe](https://dl.dropbox.com/scl/fi/sw3eyvj7upr6kz2i5f32d/ID-Gate.exe?rlkey=dod0owyj3yaj8ofztdglphc57&st=o08vrvbs&dl=1)
+Keep the database syntax compatible with `parseHWIDDatabase()` in `index.html`. Each record is expected to contain a numeric HWID followed by a block with `name` and `date` fields.
 
-These destinations are embedded in `index.html` and may change. Verify external files before downloading or distributing them.
+## Current external resources
 
-## Configuration and editing
+- **Discord community/support:** https://discord.gg/V5pduTcsJV
+- **Full showcase:** https://imgur.com/a/Wegueun
+- **External loader:** [ID-Gate.exe](https://dl.dropbox.com/scl/fi/sw3eyvj7upr6kz2i5f32d/ID-Gate.exe?rlkey=dod0owyj3yaj8ofztdglphc57&st=o08vrvbs&dl=1)
 
-### License database
+The video preview element is present in the dashboard. Its source is currently empty in the HTML, so add a valid MP4 source if you want the preview to play a video.
 
-Update the `GITHUB_URL` constant in `index.html` to the raw-text URL of the license list. Keep the file's entries compatible with `parseHWIDDatabase()`.
+## Configuration and publishing
 
-### Community and resource links
+### Change the license database
 
-Edit the relevant anchor `href` values in `index.html` when changing Discord, showcase, or download destinations.
+Edit the `GITHUB_URL` constant in `index.html` and point it to the raw-text database. Preserve the record structure expected by the parser.
 
-### Publish with GitHub Pages
+### Change external links
+
+Update the Discord, showcase, and loader anchor URLs in `index.html` when destinations change. Review external downloads before distributing them.
+
+### GitHub Pages
 
 1. Open the repository's **Settings → Pages**.
-2. Under **Build and deployment**, choose **Deploy from a branch**.
-3. Select branch `main` and folder `/(root)`.
-4. Save. GitHub Pages will publish the root `index.html` and redeploy after commits to that branch.
+2. Select **Deploy from a branch** under Build and deployment.
+3. Choose branch `main` and folder `/(root)`.
+4. Save. GitHub Pages will deploy the root `index.html` after the commit.
 
-## Security and privacy considerations
+## Security and implementation notes
 
-- **Browser-side HWID checks are not secure authorization.** Visitors can inspect and modify JavaScript running in their own browsers. Do not rely on this page alone to protect paid software or valuable resources.
-- **A public license-list URL exposes its contents.** Do not put passwords, API keys, private customer data, or other secrets in this repository or a public text file.
-- **Expiry checking is limited by the current implementation.** The page parses month and day and does not enforce a complete year-aware timestamp. Do not rely on it for strict expiry enforcement without improving the date logic.
-- **CORS proxies are third-party services.** Proxy requests can disclose the requested database URL and request metadata to those providers. A trusted server-side API is preferable for production authentication.
-- **Review downloaded scripts and executables.** The HWID helper is downloaded as a batch file, and the page also links to an external executable. Visitors should verify files and understand them before running them.
-- Keep all external links current and confirm that the linked destinations are trustworthy.
+- **Client-side checks are not secure authorization.** Visitors can inspect and modify browser JavaScript. A client-side HWID check should not be the only protection for paid software or sensitive resources.
+- **The license database is public.** Anyone who can access its raw URL may be able to read its entries. Do not place passwords, API keys, or private customer information in it.
+- **Expiry parsing is not year-aware.** The current `isExpired()` logic compares only month and day (apart from lifetime/no-expiry text). It does not validate a complete date including year; improve this before relying on it for strict license enforcement.
+- **The HWID helper uses Windows volume serial information.** This is not a guaranteed unique or tamper-resistant hardware identity and may change with system/storage configuration.
+- **CORS proxies are third-party services.** Requests routed through them disclose the requested database URL and request metadata to those providers. A trusted server-side API is preferable for production.
+- **Downloaded scripts and executables require review.** Users should inspect helper scripts and verify external downloads before running them.
+- **Clipboard access may require a secure context** (such as HTTPS) and browser permission.
 
 ## Development
 
-Edit `index.html`, commit the changes to `main`, and allow GitHub Pages to redeploy. Test the page locally and verify the published site after deployment.
+Edit `index.html`, commit the updated file to `main`, and allow GitHub Pages to redeploy. Test changes in a browser and verify the published site after deployment.
 
-For production deployment, move license verification to a server-side service with authentication, access controls, secure data storage, logging, and year-aware expiry validation.
+For production use, move license verification to a server-side service with authentication, access controls, secure storage, logging, and full year-aware expiry validation.
