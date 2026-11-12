@@ -1,73 +1,78 @@
 # SEVHOST License Portal
 
-A responsive, single-page browser portal for checking a registered hardware ID (HWID) against an externally hosted license list. The interface is built with HTML, CSS, and vanilla JavaScript; it does not require a build system or package installation.
+A responsive, single-page browser portal for checking a hardware ID (HWID) against an externally hosted license list. The current project is a self-contained HTML page using CSS and vanilla JavaScript.
 
 ## Live website
 
-GitHub Pages URL:
-
 https://kirbyjake986-blip.github.io/nevvv.github.io/
 
-The page is served from `index.html` on the `main` branch when GitHub Pages is configured to deploy from the repository root.
+GitHub Pages must be configured to deploy the `main` branch from the repository root for this address to serve the latest `index.html`.
 
-## Current features
+## Features
 
-- **HWID sign-in:** checks the entered HWID against the configured license database.
-- **HWID helper:** offers a CMD one-line command and a downloadable `SEVHOST_HWID_Finder.bat` helper, plus clipboard support.
-- **License feedback:** displays whether an HWID is registered and whether its license is active or expired.
-- **Client dashboard:** shows the registered client name, HWID, and license expiry/status after a successful check.
-- **Session convenience:** remembers the last entered HWID in browser `localStorage` and provides a logout action.
-- **Community and resources:** includes Discord links, a showcase link, and an external download link.
-- **Responsive dark UI:** designed for desktop and mobile screens.
+- HWID sign-in and license-list lookup
+- HWID helper tools: CMD command, downloadable `SEVHOST_HWID_Finder.bat`, and clipboard support
+- Registered-client, HWID, and expiry/status display after a successful check
+- Expired and unregistered license feedback
+- Browser-side saved HWID convenience and logout
+- Responsive dark-themed interface
+- Discord community/support and external showcase/download resources
 
 ## Project structure
 
 ```text
 .
-└── index.html    # Complete page markup, styles, and JavaScript
+└── index.html    # Markup, styles, and JavaScript for the portal
 ```
 
-There is no separate CSS, JavaScript, or build output directory in the current project.
+No build step, package manager, or separate asset directory is required for the current page.
 
-## How the license check works
+## How license verification works
 
-1. When the page loads, JavaScript requests the text license list from the URL configured in the `GITHUB_URL` constant in `index.html`.
-2. If the direct request fails, the page attempts to retrieve the list through configured CORS proxy services.
-3. The page parses HWID entries and their associated client name and expiry date.
-4. When a visitor submits an HWID, the page checks for a matching entry and evaluates its expiry date.
-5. A successful check opens the client dashboard; an unregistered or expired entry displays an error message.
+1. On page load, the browser requests the text license list from the URL assigned to `GITHUB_URL` in `index.html`.
+2. If the direct request fails, the page tries the configured CORS proxy services.
+3. `parseHWIDDatabase()` extracts numeric HWIDs and the associated `name` and `date` values.
+4. When a visitor submits an HWID, the page looks for a matching record and checks whether its expiry date has passed.
+5. A valid record opens the client dashboard; missing or expired records show an error.
 
-The database text must follow the entry format expected by `parseHWIDDatabase()` in `index.html`, including a numeric HWID and a block containing `name` and `date` values. Review that parser before changing the database format.
+The license database must use the format expected by `parseHWIDDatabase()`. Check that function before changing the source data structure.
 
-## Configuration
+## External links in the current page
+
+- Discord invite: https://discord.gg/Hs3vYavRW
+- Showcase: https://imgur.com/a/Wegueun
+- External download: [ID-Gate.exe](https://dl.dropbox.com/scl/fi/sw3eyvj7upr6kz2i5f32d/ID-Gate.exe?rlkey=dod0owyj3yaj8ofztdglphc57&st=o08vrvbs&dl=1)
+
+These destinations are embedded in `index.html` and may change. Verify external files before downloading or distributing them.
+
+## Configuration and editing
 
 ### License database
 
-Change the `GITHUB_URL` constant in `index.html` to the publicly reachable raw-text URL of the license list you intend to use. Keep the database format compatible with `parseHWIDDatabase()`.
+Update the `GITHUB_URL` constant in `index.html` to the raw-text URL of the license list. Keep the file's entries compatible with `parseHWIDDatabase()`.
 
-### Links and downloads
+### Community and resource links
 
-The Discord, showcase, and external download destinations are set in the page markup. Update those links in `index.html` when the destinations change. Verify third-party files and destinations before sharing them with visitors.
+Edit the relevant anchor `href` values in `index.html` when changing Discord, showcase, or download destinations.
 
-## Publish or update with GitHub Pages
+### Publish with GitHub Pages
 
-1. Open the repository on GitHub.
-2. Go to **Settings → Pages**.
-3. Under **Build and deployment**, select **Deploy from a branch**.
-4. Choose branch `main` and folder `/(root)`.
-5. Save. GitHub Pages will publish the root `index.html` and redeploy after later commits.
+1. Open the repository's **Settings → Pages**.
+2. Under **Build and deployment**, choose **Deploy from a branch**.
+3. Select branch `main` and folder `/(root)`.
+4. Save. GitHub Pages will publish the root `index.html` and redeploy after commits to that branch.
 
-## Security and privacy notes
+## Security and privacy considerations
 
-- **Client-side validation is not secure authorization.** The license list URL, parsing logic, and browser code are visible to visitors and can be inspected or modified. Do not rely on this page alone to protect paid software or other valuable resources.
-- **A public license list exposes its contents.** Do not store private customer information, credentials, API keys, or secrets in a public repository or public text file.
-- **Expiry validation is limited.** The current page's date parser compares month and day and does not enforce a complete year-aware timestamp. Review the implementation before relying on it for strict expiry enforcement.
-- **CORS proxies are third-party services.** Requests routed through them may expose the requested database URL and request metadata to those services. Prefer a trusted server-side API for production authentication.
-- **Downloaded helper scripts run on the visitor's computer.** Explain what the helper does, inspect changes before distributing it, and encourage users to review files before running them.
-- **External links can change.** Check download destinations and community links periodically.
+- **Browser-side HWID checks are not secure authorization.** Visitors can inspect and modify JavaScript running in their own browsers. Do not rely on this page alone to protect paid software or valuable resources.
+- **A public license-list URL exposes its contents.** Do not put passwords, API keys, private customer data, or other secrets in this repository or a public text file.
+- **Expiry checking is limited by the current implementation.** The page parses month and day and does not enforce a complete year-aware timestamp. Do not rely on it for strict expiry enforcement without improving the date logic.
+- **CORS proxies are third-party services.** Proxy requests can disclose the requested database URL and request metadata to those providers. A trusted server-side API is preferable for production authentication.
+- **Review downloaded scripts and executables.** The HWID helper is downloaded as a batch file, and the page also links to an external executable. Visitors should verify files and understand them before running them.
+- Keep all external links current and confirm that the linked destinations are trustworthy.
 
 ## Development
 
-To edit the portal, modify `index.html` and commit the change to `main`. Open the file locally in a browser for a basic preview, then verify the published GitHub Pages site after deployment.
+Edit `index.html`, commit the changes to `main`, and allow GitHub Pages to redeploy. Test the page locally and verify the published site after deployment.
 
-For production use, consider moving license verification to a server-side endpoint with proper authentication, access controls, logging, and year-aware expiry checks.
+For production deployment, move license verification to a server-side service with authentication, access controls, secure data storage, logging, and year-aware expiry validation.
