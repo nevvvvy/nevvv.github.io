@@ -39,7 +39,8 @@ The license database must use the format expected by `parseHWIDDatabase()`. Chec
 
 ## External links in the current page
 
-- Discord invite: https://discord.gg/Hs3vYavRW
+- Primary Discord invite: https://discord.gg/V5pduTcsJV
+- Additional Discord/resource invite: https://discord.gg/Hs3vYavRW
 - Showcase: https://imgur.com/a/Wegueun
 - External download: [ID-Gate.exe](https://dl.dropbox.com/scl/fi/sw3eyvj7upr6kz2i5f32d/ID-Gate.exe?rlkey=dod0owyj3yaj8ofztdglphc57&st=o08vrvbs&dl=1)
 
